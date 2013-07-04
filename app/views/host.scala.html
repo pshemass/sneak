@@ -1,0 +1,58 @@
+@(host: Host)( implicit request: RequestHeader )
+
+<div id="content">
+    <div id="chart">
+        <script type="text/javascript">
+            var charts = []
+            charts[ '@host.id' ] = new Highcharts.Chart({
+            chart: {
+            renderTo: 'chart',
+            defaultSeriesType: 'spline'
+            },
+            xAxis: {
+            type: 'datetime'
+            },
+            series: [{
+            name: "CPU",
+            data: []
+            }]
+            });
+        </script>
+    </div>
+
+    <script type="text/javascript">
+        var socket = new WebSocket("@routes.Application.stats( host.id ).webSocketURL()")
+        var source = new EventSource("@routes.Application.statsStream( host.id )")
+
+        source.addEventListener('message', function(event) {
+            var datapoint = jQuery.parseJSON( event.data );
+            var chart = charts[ '@host.id' ]
+
+            chart.series[ 0 ].addPoint({
+                    x: datapoint.cpu.timestamp,
+                    y: datapoint.cpu.load
+                }, true, chart.series[ 0 ].data.length >= 50 );
+            console.log(datapoint.id, datapoint);
+        }, false);
+
+        source.addEventListener('open', function(e) {
+            // Connection was opened.
+        }, false);
+
+        source.addEventListener('error', function(e) {
+            if (e.readyState == EventSource.CLOSED) {
+                // Connection was closed.
+            }
+        }, false);
+
+
+        @*socket.onmessage = function( event ) {*@
+            @*var datapoint = jQuery.parseJSON( event.data );*@
+            @*var chart = charts[ '@host.id' ]*@
+
+            @*chart.series[ 0 ].addPoint({*@
+                    @*x: datapoint.cpu.timestamp,*@
+                    @*y: datapoint.cpu.load*@
+                @*}, true, chart.series[ 0 ].data.length >= 50 );*@
+        @*}*@
+    </script>
