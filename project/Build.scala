@@ -13,9 +13,11 @@ object ApplicationBuild extends Build {
     anorm
   )
 
+  val agentProject = Project("agent-library", file("modules/agent-library"))
+
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here      
-  )
+  ).dependsOn(agentProject)
 
 }
