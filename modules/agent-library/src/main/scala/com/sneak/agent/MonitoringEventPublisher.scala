@@ -12,8 +12,14 @@ package com.sneak.agent
  */
 trait MonitoringEventPublisher {
 
-  val serializer: MessageSerializer
+  /**
+   * Reference to serializer preparing the messages.
+   */
+  val serializer: MessageSerializer[Metric]
 
+  /**
+   * Reference to the broker delivering messages.
+   */
   val broker: MessageBroker
 
   /**
@@ -21,5 +27,7 @@ trait MonitoringEventPublisher {
    * to a remote metrics store.
    * @param metric Published metric
    */
-  def publish(metric: Metric)
+  def publish(metric: Metric) {
+    broker.send(serializer.serialize(metric))
+  }
 }
