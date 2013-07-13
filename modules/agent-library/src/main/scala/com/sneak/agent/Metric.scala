@@ -1,3 +1,5 @@
+package com.sneak.agent
+
 import java.net.InetAddress
 import org.joda.time._
 
