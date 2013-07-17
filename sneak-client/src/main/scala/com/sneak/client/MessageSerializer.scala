@@ -1,4 +1,4 @@
-package com.sneak.agent
+package com.sneak.client
 
 /**
  * Serializes messages
