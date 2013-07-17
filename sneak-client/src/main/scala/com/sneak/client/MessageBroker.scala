@@ -1,4 +1,4 @@
-package com.sneak.agent
+package com.sneak.client
 
 /**
  * Broker is responsible for sending serialized messages to metrics store.

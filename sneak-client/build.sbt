@@ -1,4 +1,4 @@
-name := "agent-library"
+name := "sneak-client"
 
 version := "1.0"
 
