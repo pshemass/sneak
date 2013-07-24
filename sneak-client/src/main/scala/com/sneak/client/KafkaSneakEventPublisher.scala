@@ -1,17 +1,41 @@
 package com.sneak.client
 
+import kafka.producer.{KeyedMessage, ProducerConfig, Producer}
+import java.util.Properties
+import org.slf4j.LoggerFactory
+import com.sneak.thrift.Message
+
+
 /**
  * Created with IntelliJ IDEA.
  * User: rzbiq
  * Date: 7/17/13
  * Time: 11:27 PM
- * To change this template use File | Settings | File Templates.
  */
-class KafkaSneakEventPublisher extends SneakEventPublisher{
+trait KafkaSneakEventPublisher extends SneakEventPublisher {
+
+  val topic: String
+
+  val messageSerializer: MessageSerializer[Message]
+
+  val producer = {
+    val props = new Properties()
+    props.put("serializer.class", "kafka.serializer.StringEncoder");
+    props.put("zk.connect", "localhost:2181");
+    // Use random partitioner. Don't need the key type. Just set it to Integer.
+    // The message is of type String.
+    new Producer[Integer, Array[Byte]](new ProducerConfig(props))
+  }
+
+
+
   /**
    * Publish a metric. This should lead to delivering given metric object over the network
    * to a remote metrics store.
    * @param metric Published metric
    */
-  def publish(metric: Metric) {}
+  def publish(metric: Message) {
+    val message = messageSerializer.serialize(metric)
+//    producer.send(Seq(new KeyedMessage(1, message)))
+  }
 }
