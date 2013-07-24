@@ -1,5 +1,8 @@
 package com.sneak.client
 
+import kafka.serializer.{Decoder, Encoder}
+import com.sneak.thrift.Message
+
 /**
  * Serializes messages
  *
@@ -7,7 +10,9 @@ package com.sneak.client
  * Date: 7/13/13
  * Time: 11:54 PM
  */
-trait MessageSerializer[TYPE] {
+class MessageSerializer extends Encoder[Message] with Decoder[Message] {
 
-  def serialize(msg: TYPE): Array[Byte]
+  def toBytes(p1: Message): Array[Byte] = ???
+
+  def fromBytes(p1: Array[Byte]): Message = ???
 }

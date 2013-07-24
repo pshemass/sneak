@@ -16,15 +16,15 @@ trait KafkaSneakEventPublisher extends SneakEventPublisher {
 
   val topic: String
 
-  val messageSerializer: MessageSerializer[Message]
-
   val producer = {
     val props = new Properties()
-    props.put("serializer.class", "kafka.serializer.StringEncoder");
-    props.put("zk.connect", "localhost:2181");
+    props.put("serializer.class", "kafka.serializer.StringEncoder")
+    props.put("zk.connect", "localhost:2181")
+    props.put("serializer.class", "com.sneak.client.MessageSerializer")
+
     // Use random partitioner. Don't need the key type. Just set it to Integer.
     // The message is of type String.
-    new Producer[Integer, Array[Byte]](new ProducerConfig(props))
+    new Producer[String, Message](new ProducerConfig(props))
   }
 
 
@@ -35,7 +35,7 @@ trait KafkaSneakEventPublisher extends SneakEventPublisher {
    * @param metric Published metric
    */
   def publish(metric: Message) {
-    val message = messageSerializer.serialize(metric)
-//    producer.send(Seq(new KeyedMessage(1, message)))
+    val msg = new KeyedMessage[String, Message](topic, metric)
+    producer.send(Seq(msg))
   }
 }
