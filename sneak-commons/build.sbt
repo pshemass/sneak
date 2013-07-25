@@ -1,6 +1,8 @@
 name := "sneak-commons"
 
-version := "0.1"
+organization := "sneak"
+
+version := "0.0.1"
 
 scalaVersion := "2.10.1"
 
