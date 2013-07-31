@@ -10,9 +10,9 @@ import com.sneak.thrift.Message
  * Date: 7/13/13
  * Time: 11:54 PM
  */
-class MessageSerializer extends Encoder[Message] with Decoder[Message] {
+trait MessageSerializer extends Encoder[Message] with Decoder[Message] {
 
-  def toBytes(p1: Message): Array[Byte] = ???
+  def toBytes(p1: Message): Array[Byte]
 
-  def fromBytes(p1: Array[Byte]): Message = ???
+  def fromBytes(p1: Array[Byte]): Message
 }

@@ -36,6 +36,6 @@ trait KafkaSneakEventPublisher extends SneakEventPublisher {
    */
   def publish(metric: Message) {
     val msg = new KeyedMessage[String, Message](topic, metric)
-    producer.send(Seq(msg))
+    producer.send(msg)
   }
 }
