@@ -4,6 +4,7 @@ import kafka.producer.{KeyedMessage, ProducerConfig, Producer}
 import java.util.Properties
 import org.slf4j.LoggerFactory
 import com.sneak.thrift.Message
+import com.typesafe.scalalogging.slf4j.Logging
 
 
 /**
@@ -12,11 +13,11 @@ import com.sneak.thrift.Message
  * Date: 7/17/13
  * Time: 11:27 PM
  */
-trait KafkaSneakEventPublisher extends SneakEventPublisher {
+trait KafkaSneakEventPublisher extends SneakEventPublisher with Logging {
 
   val topic: String
 
-  val producer = {
+  val producer: Producer[String, Message] = {
     val props = new Properties()
     props.put("serializer.class", "kafka.serializer.StringEncoder")
     props.put("zk.connect", "localhost:2181")
@@ -35,6 +36,7 @@ trait KafkaSneakEventPublisher extends SneakEventPublisher {
    * @param metric Published metric
    */
   def publish(metric: Message) {
+    logger.debug(s"Sending message ${metric.name}")
     val msg = new KeyedMessage[String, Message](topic, metric)
     producer.send(msg)
   }

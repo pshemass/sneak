@@ -9,7 +9,7 @@ import org.specs2.mutable.Specification
  * Date: 7/30/13
  * Time: 11:18 PM
  */
-class ThriftMessageSerializerTest extends Specification {
+class ThriftMessageSerializerTest extends Specification  {
 
   "ThriftMessageSerializer" should {
     "Seriaize and Deserialize" in {
