@@ -1,4 +1,4 @@
-package com.sneak.store
+package com.sneak.store.service
 
 import com.sneak.thrift.Message
 import com.twitter.cassie.{Column, Cluster}
@@ -30,6 +30,11 @@ trait CassandraMetricStore extends MetricsStore with Logging {
    */
   val cluster: Cluster
 
+  /**
+   * An implementation of key building algorithm
+   */
+  val keyBuilder: KeyBuilder
+
   val keySpace = {
     cluster.keyspace(KeySpaceName).connect()
   }
@@ -39,13 +44,6 @@ trait CassandraMetricStore extends MetricsStore with Logging {
   }
 
 
-  /**
-   * Creates meaningful metric key
-   *
-   * @param message Metric to build the key for
-   * @return Returns the key
-   */
-  def buildKey(message: Message): String
 
   def storeMetric(metric: Message) {
     logger.info(s"Storing message ${metric.name}")

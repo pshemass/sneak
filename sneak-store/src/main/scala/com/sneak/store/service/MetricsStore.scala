@@ -1,4 +1,4 @@
-package com.sneak.store
+package com.sneak.store.service
 
 import com.sneak.thrift.Message
 
