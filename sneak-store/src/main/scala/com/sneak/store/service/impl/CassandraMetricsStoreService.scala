@@ -13,9 +13,9 @@ import com.sneak.store.util.Configuration
  */
 trait CassandraMetricsStoreService extends CassandraMetricStore {
 
-  this: Configuration =>
+  val config: Configuration
 
-  val cluster = new Cluster(getString("cassandra.hosts"))
+  val cluster = new Cluster(config getString("cassandra.hosts"))
 
   val keyBuilder = new SimpleKeyBuilder
 }
