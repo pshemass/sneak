@@ -9,7 +9,7 @@ object ApplicationBuild extends Build {
 
 
   val appDependencies = Seq(
-    // Add your project dependencies here,
+    "com.github.detro.ghostdriver" % "phantomjsdriver" % "1.0.4" % "test"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

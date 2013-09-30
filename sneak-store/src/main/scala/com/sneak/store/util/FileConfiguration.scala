@@ -36,12 +36,18 @@ class FileConfiguration(file: File) extends Configuration with Logging {
 }
 
 object FileConfiguration {
+
+  val CONFIG_FILE_PROPERTY = "storeConfigFile"
+
   /**
    * Creates new configuration from properties file location.
-   * @param fileLocation Location of properties file
+   * @param localPath Location of properties file
    * @return
    */
-  def apply(fileLocation: String) = new FileConfiguration(new File(fileLocation))
+  def apply(localPath: String) = {
+    val path = getClass.getClassLoader.getResource(localPath).getPath
+    new FileConfiguration(new File(path))
+  }
 
   /**
    * Creates new configuration from given properties file.
@@ -57,8 +63,8 @@ object FileConfiguration {
    * <li>Location in the config folder
    * </ul>
    */
-  def apply = {
-    val filePath = scala.util.Properties.propOrElse("config.file", configFile)
+  def apply(): FileConfiguration = {
+    val filePath = scala.util.Properties.propOrElse(CONFIG_FILE_PROPERTY, configFile)
     apply(filePath)
   }
 

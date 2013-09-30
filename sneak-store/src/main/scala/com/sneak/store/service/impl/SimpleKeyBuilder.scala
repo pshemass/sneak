@@ -9,7 +9,7 @@ import com.sneak.store.service.KeyBuilder
  * Date: 8/24/13
  * Time: 11:42 PM
  */
-class SimpleKeyBuilder extends KeyBuilder{
+class SimpleKeyBuilder extends KeyBuilder {
 
   /**
    * Creates meaningful metric key
