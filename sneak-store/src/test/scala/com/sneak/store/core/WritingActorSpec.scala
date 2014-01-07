@@ -7,7 +7,9 @@ import akka.testkit.{ ImplicitSender, TestKit }
 import com.sneak.store.service.MetricsStore
 import com.sneak.thrift.Message
 import WritingActor._
+import org.specs2._
 import org.specs2.mock.Mockito
+import com.typesafe.config.ConfigFactory
 
 class WritingActorSpec(_system: ActorSystem) extends TestKit(_system)
   with ImplicitSender
@@ -44,18 +46,23 @@ class WritingActorSpec(_system: ActorSystem) extends TestKit(_system)
       expectMsg(Saved(1))
     }
 
-    "execute store operation" in {
-      import akka.testkit.TestActorRef
-
-      val store: MetricsStore = mock[MetricsStore]
-
-      val actorRef = TestActorRef(WritingActor.props(store))
-      val msg = Message(System.currentTimeMillis(), "test", 1.0, "localhost", "app1")
-      actorRef receive(Save(1l, msg))
-
-      there was no(store).storeMetric(any[Message])
-    }
-
   }
 
+}
+
+class WritingActorUnitTest extends mutable.Specification with Mockito {
+
+  "execute store operation" in {
+    import akka.testkit.TestActorRef
+
+    implicit val actorSystem = ActorSystem("testActorSystem", ConfigFactory.load())
+
+    val store: MetricsStore = mock[MetricsStore]
+
+    val actorRef = TestActorRef(WritingActor.props(store))
+    val msg = Message(System.currentTimeMillis(), "test", 1.0, "localhost", "app1")
+    actorRef receive(Save(1l, msg))
+
+    there was one(store).storeMetric(any[Message])
+  }
 }
