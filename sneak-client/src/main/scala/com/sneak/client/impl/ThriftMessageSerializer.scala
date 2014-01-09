@@ -1,4 +1,4 @@
-package com.sneak.client
+package com.sneak.client.impl
 
 import com.sneak.thrift.Message
 import org.apache.thrift.TSerializer
