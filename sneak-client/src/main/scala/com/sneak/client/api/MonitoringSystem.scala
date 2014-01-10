@@ -9,6 +9,7 @@ import com.typesafe.scalalogging.slf4j.Logging
 class MonitoringSystem(implicit publisher: EventPublisher, settings: Settings) extends Logging {
 
   def metricCaptor(host: String, applicationName: String): MetricsCaptor = {
+    require(host != null && applicationName != null)
     logger.warn("Creating new metrics captor")
     new MetricsCaptor(host, applicationName)
   }
@@ -22,8 +23,8 @@ class MonitoringSystem(implicit publisher: EventPublisher, settings: Settings) e
 
 object MonitoringSystem {
 
-  def apply(implicit settings: Settings) = {
-    implicit val publisher = KafkaEventPublisher(settings)
+  def apply(implicit settings: Settings, publisher: EventPublisher) = {
+    require(settings != null)
     new MonitoringSystem()
   }
 
