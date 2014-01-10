@@ -21,4 +21,9 @@ trait EventPublisher {
    * @param metric Published metric
    */
   def publish(metric: Message)
+
+  /**
+   * Closes connection to the store.
+   */
+  def shutdown()
 }

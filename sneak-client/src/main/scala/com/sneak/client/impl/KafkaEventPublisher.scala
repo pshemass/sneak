@@ -13,7 +13,7 @@ import com.sneak.client.api.Settings
 class KafkaEventPublisher(topic: String, zookeeper: Seq[InetSocketAddress]) extends EventPublisher with Logging {
 
 
-   val producer: Producer[String, Message] = {
+   lazy val producer: Producer[String, Message] = {
      val props = new Properties()
      props.put("zk.connect", zookeeper.toString)
      props.put("serializer.class", "com.sneak.client.com.sneak.client.impl.MessageSerializer")
@@ -35,12 +35,19 @@ class KafkaEventPublisher(topic: String, zookeeper: Seq[InetSocketAddress]) exte
      val msg = new KeyedMessage[String, Message](topic, metric)
      producer.send(msg)
    }
- }
+
+  /**
+   * Closes connection to the store.
+   */
+  def shutdown(): Unit = {
+    producer.close()
+  }
+}
 
 object KafkaEventPublisher {
   import com.sneak.client.api.Converters._
 
-  def apply(settings: Settings) = new KafkaEventPublisher(
+  def apply(settings: Settings): EventPublisher = new KafkaEventPublisher(
     settings.topic,
     settings.kafkaZooKeeper
   )
