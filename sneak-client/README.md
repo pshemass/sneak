@@ -1,8 +1,9 @@
 Client implementation
 ===
 ```scala
-implicit val settings = Settings("broker.host:123", "sneak-topic")
-val system = MonitoringSystem()
-val captor = system.metricCaptor("my.host", "my.application")
-captor.capture("responseTime", 666)
+val settings = Settings("localhost:666", "sneak")
+val publisher = mock[EventPublisher]
+val system = MonitoringSystem(settings, publisher)
+val captor = system.metricCaptor("test", "testApp")
+captor.capture("test.metric", 666)
 ```
