@@ -1,21 +1,19 @@
 package com.sneak.store
 
 import com.typesafe.scalalogging.slf4j.Logging
-import com.sneak.store.service.impl.{CassandraClusterFactoryImpl, CassandraMetricStore}
+import com.sneak.store.service.impl.CassandraMetricStore
 import com.sneak.store.util.FileConfiguration
-import akka.actor.{Props, ActorSystem}
+import akka.actor.ActorSystem
 import com.sneak.store.core.WritingActor
 
 /**
- * Created by fox on 10/14/13.
+ * Main application class.
  */
 class Main extends App with Logging {
 
   val config = FileConfiguration()
 
-  val clusterFactory = new CassandraClusterFactoryImpl(config)
-
-  val store = new CassandraMetricStore(config, clusterFactory)
+  val store = CassandraMetricStore(config)
 
   val system = ActorSystem()
 

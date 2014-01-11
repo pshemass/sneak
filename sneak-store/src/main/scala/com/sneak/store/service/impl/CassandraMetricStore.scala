@@ -25,12 +25,13 @@ class CassandraMetricStore(config: Configuration,
 
   val KEYSPACE_PROPERTY = "cassandra.keyspace"
 
-  val keyspace = config getString(KEYSPACE_PROPERTY)
+  val keyspace = config getString KEYSPACE_PROPERTY
 
   val session = cluster.connect
 
   def close {
     logger info s"Shutting down connection to Cassandra cluster ${cluster.getMetadata.getClusterName}"
+    //cluster shutdown will also close all sessions
     cluster.shutdown()
   }
 
@@ -42,17 +43,17 @@ class CassandraMetricStore(config: Configuration,
     logger.info(s"Storing message ${metric.name}")
     val stmt: PreparedStatement = session.prepare(
       s"""
-        |INSERT INTO ${keyspace}.messages(id, event_time, name, value, host, application, options)
+        |INSERT INTO $keyspace.messages(id, event_time, name, value, host, application, options)
         |VALUES(?,?,?,?,?,?,?);
       """.stripMargin)
     val boundStatement = new BoundStatement(stmt)
     session executeAsync(boundStatement bind(
       UUID randomUUID(),
       new Date(metric timestamp),
-      metric name,
-      metric value : java.lang.Double,
-      metric host,
-      metric application,
+      metric.name,
+      metric.value : java.lang.Double,
+      metric.host,
+      metric.application,
       metric.options.asJava
     ))
   }
@@ -64,7 +65,7 @@ class CassandraMetricStore(config: Configuration,
     logger.info(s"Reading metric for $key")
     val query =
       s"""
-        |select * from ${keyspace}.messages
+        |select * from $keyspace.messages
         |where id = ?
       """.stripMargin
     val stmt = session.prepare(query)
@@ -87,13 +88,9 @@ class CassandraMetricStore(config: Configuration,
 
 object CassandraMetricStore {
 
-  /**
-   * Key space for storing metrics
-   */
-  val KeySpaceName = "metrics"
-
-  /**
-   * Column family for storing metrics
-   */
-  val ColumnFamily = "metrics"
+  def apply(config: Configuration): CassandraMetricStore = {
+    val builder = new CassandraClusterBuilder(config)
+    val cluster = builder.build
+    new CassandraMetricStore(config, cluster) //TODO: consider a solution for key builder
+  }
 }
