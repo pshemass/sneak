@@ -1,4 +1,4 @@
-package com.sneak.client
+package com.sneak.client.impl
 
 import org.joda.time.DateTime
 import java.net.InetAddress
@@ -12,9 +12,8 @@ import com.sneak.thrift.Message
  * User: fox
  * Date: 7/13/13
  * Time: 11:41 PM
- * To change this template use File | Settings | File Templates.
  */
-trait SneakEventPublisher {
+trait EventPublisher {
 
   /**
    * Publish a metric. This should lead to delivering given metric object over the network
@@ -22,4 +21,9 @@ trait SneakEventPublisher {
    * @param metric Published metric
    */
   def publish(metric: Message)
+
+  /**
+   * Closes connection to the store.
+   */
+  def shutdown()
 }

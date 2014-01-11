@@ -1,4 +1,4 @@
-import com.sneak.client.ThriftMessageSerializer
+import com.sneak.client.impl.ThriftMessageSerializer
 import com.sneak.thrift.Message
 import java.util.Date
 import org.specs2.mutable.Specification
