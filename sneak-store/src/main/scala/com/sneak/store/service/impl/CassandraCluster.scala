@@ -5,14 +5,7 @@ import com.sneak.store.util.Configuration
 import com.twitter.logging.Logger
 import com.typesafe.scalalogging.slf4j.Logging
 
-/**
- * Created with IntelliJ IDEA.
- * User: fox
- * Date: 10/13/13
- * Time: 8:14 PM
- */
-class CassandraClusterFactoryImpl(config: Configuration)
-  extends CassandraClusterFactory with Logging {
+class CassandraCluster(config: Configuration) extends Logging {
 
   val CASSANDRA_SEEDS: String = "cassandra.hosts"
 

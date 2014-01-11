@@ -1,7 +1,7 @@
 package com.sneak.store
 
 import com.typesafe.scalalogging.slf4j.Logging
-import com.sneak.store.service.impl.{CassandraClusterFactoryImpl, CassandraClusterFactory, CassandraMetricStore}
+import com.sneak.store.service.impl.{CassandraClusterFactoryImpl, CassandraMetricStore}
 import com.sneak.store.util.FileConfiguration
 import akka.actor.{Props, ActorSystem}
 import com.sneak.store.core.WritingActor

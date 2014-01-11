@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Time: 10:52 PM
  */
 class CassandraMetricStore(config: Configuration,
-                           clusterFactory: CassandraClusterFactory,
+                           cluster: Cluster,
                            keyBuilder: Message => String = message => message.name)
   extends MetricsStore with Logging {
 
@@ -27,7 +27,7 @@ class CassandraMetricStore(config: Configuration,
 
   val keyspace = config getString(KEYSPACE_PROPERTY)
 
-  val cluster: Cluster = clusterFactory.connect
+  val session = cluster.connect
 
   def close {
     logger info s"Shutting down connection to Cassandra cluster ${cluster.getMetadata.getClusterName}"
@@ -36,10 +36,10 @@ class CassandraMetricStore(config: Configuration,
 
 
   def storeMetric(metric: Message) = {
+
     import scala.collection.JavaConverters._
 
     logger.info(s"Storing message ${metric.name}")
-    val session: Session = cluster.connect()
     val stmt: PreparedStatement = session.prepare(
       s"""
         |INSERT INTO ${keyspace}.messages(id, event_time, name, value, host, application, options)
@@ -67,7 +67,6 @@ class CassandraMetricStore(config: Configuration,
         |select * from ${keyspace}.messages
         |where id = ?
       """.stripMargin
-    val session = cluster.connect
     val stmt = session.prepare(query)
     val boundStatement = new BoundStatement(stmt)
     session.executeAsync( boundStatement.bind(UUID.fromString(key))) map(_.all.map(buildMessage).toList.head)
