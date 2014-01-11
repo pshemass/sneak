@@ -4,9 +4,6 @@ import org.specs2.mutable.Specification
 import java.net.InetSocketAddress
 import org.specs2.matcher.Matchers
 
-/**
- * Created by fox on 09/01/14.
- */
 class ConvertersSpec extends Specification with Matchers {
   "Converters" should {
     "convert string to sequence of single InetSocketAddress" in {

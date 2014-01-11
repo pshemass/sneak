@@ -15,7 +15,7 @@ class KafkaEventPublisher(topic: String, zookeeper: Seq[InetSocketAddress]) exte
 
    lazy val producer: Producer[String, Message] = {
      val props = new Properties()
-     props.put("zk.connect", zookeeper.toString)
+     props.put("zk.connect", zookeeper.toString())
      props.put("serializer.class", "com.sneak.client.com.sneak.client.impl.MessageSerializer")
 
      // Use random partitioner. Don't need the key type. Just set it to Integer.

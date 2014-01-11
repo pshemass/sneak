@@ -19,7 +19,7 @@ object Converters {
     addresses.split(",").map { address =>
       address.split(":").toList match {
         case host :: port :: Nil => new InetSocketAddress(host, port.toInt)
-        case _ => throw new IllegalArgumentException(s"Zookeeper address ${address} is invalid")
+        case _ => throw new IllegalArgumentException(s"Zookeeper address $address is invalid")
       }
     }
   }
