@@ -2,13 +2,11 @@ package com.sneak.store.service.impl
 
 import com.datastax.driver.core._
 import scala.concurrent.{CanAwait, Future, ExecutionContext}
-import scala.util.{Success, Try}
+import scala.util.Try
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 import com.sneak.store.util.Configuration
 import com.typesafe.scalalogging.slf4j.Logging
-import scala.util.Success
-import scala.Some
 import scala.util.Success
 import scala.Some
 

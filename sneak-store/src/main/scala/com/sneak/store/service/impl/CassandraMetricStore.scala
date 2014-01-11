@@ -6,22 +6,21 @@ import com.sneak.store.util.Configuration
 import com.sneak.store.service.MetricsStore
 import com.datastax.driver.core._
 import java.util.{Date, UUID}
-import com.datastax.driver.core.querybuilder.{Clause, QueryBuilder}
 import scala.collection.JavaConversions._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
- * Store that persists messages to Cassandra database.
+  * Store that persists messages to Cassandra database.
  *
  * User: fox
  * Date: 8/8/13
  * Time: 10:52 PM
  */
 class CassandraMetricStore(config: Configuration,
-                           cluster: Cluster,
-                           keyBuilder: Message => String = message => message.name)
-  extends MetricsStore with Logging {
+cluster: Cluster,
+keyBuilder: Message => String = message => message.name)
+extends MetricsStore with Logging {
 
   val KEYSPACE_PROPERTY = "cassandra.keyspace"
 
@@ -35,8 +34,9 @@ class CassandraMetricStore(config: Configuration,
     cluster.shutdown()
   }
 
+  import cassandra.resultset._
 
-  def storeMetric(metric: Message) = {
+  def storeMetric(metric: Message): Future[ResultSet] = {
 
     import scala.collection.JavaConverters._
 
@@ -58,7 +58,6 @@ class CassandraMetricStore(config: Configuration,
     ))
   }
 
-  import cassandra.resultset._
 
 
   def readMetric(key: String): Future[Message] = {
