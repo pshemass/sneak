@@ -39,6 +39,7 @@ extends MetricsStore with Logging {
   def storeMetric(metric: Message): Future[ResultSet] = {
 
     import scala.collection.JavaConverters._
+    import cassandra.boundstatement._
 
     logger.info(s"Storing message ${metric.name}")
     val stmt: PreparedStatement = session.prepare(
@@ -47,15 +48,7 @@ extends MetricsStore with Logging {
         |VALUES(?,?,?,?,?,?,?);
       """.stripMargin)
     val boundStatement = new BoundStatement(stmt)
-    session executeAsync(boundStatement bind(
-      UUID randomUUID(),
-      new Date(metric timestamp),
-      metric.name,
-      metric.value : java.lang.Double,
-      metric.host,
-      metric.application,
-      metric.options.asJava
-    ))
+    session executeAsync(boundStatement bindFrom metric)
   }
 
 

@@ -58,7 +58,7 @@ trait Binder[-A] {
 trait BoundStatementOperations {
 
   implicit class RichBoundStatement[A : Binder](boundStatement: BoundStatement) {
-    val binder = implicitly[Binder[A]]
+    val binder: Binder[A] = implicitly[Binder[A]]
 
     def bindFrom(value: A): BoundStatement = {
       binder.bind(value, boundStatement)
