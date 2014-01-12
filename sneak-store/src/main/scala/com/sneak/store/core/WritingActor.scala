@@ -5,6 +5,7 @@ import com.sneak.store.service.MetricsStore
 import com.sneak.thrift.Message
 import com.typesafe.scalalogging.slf4j.Logging
 import WritingActor._
+import com.sneak.store.service.impl.CassandraMetricStore
 
 
 object WritingActor {

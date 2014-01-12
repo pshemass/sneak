@@ -3,13 +3,13 @@ package com.sneak.store.service.impl
 import com.sneak.thrift.Message
 import com.typesafe.scalalogging.slf4j.Logging
 import com.sneak.store.util.Configuration
-import com.sneak.store.service.MetricsStore
 import com.datastax.driver.core._
 import java.util.{Date, UUID}
-import com.datastax.driver.core.querybuilder.{Clause, QueryBuilder}
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import com.sneak.store.service.MetricsStore
 
 /**
  * Store that persists messages to Cassandra database.
@@ -19,58 +19,65 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Time: 10:52 PM
  */
 class CassandraMetricStore(config: Configuration,
-                           clusterFactory: CassandraClusterFactory,
+                           cluster: Cluster,
                            keyBuilder: Message => String = message => message.name)
-  extends MetricsStore with Logging {
+extends MetricsStore with Logging {
 
   val KEYSPACE_PROPERTY = "cassandra.keyspace"
 
-  val keyspace = config getString(KEYSPACE_PROPERTY)
+  val keyspace = config getString KEYSPACE_PROPERTY
 
-  val cluster: Cluster = clusterFactory.connect
+  val session = cluster.connect
+
+  class MetricBinder extends Binder[Message] {
+    def bind(value: Message, boundStatement: BoundStatement): Unit = {
+      boundStatement.bind(
+        UUID randomUUID(),
+        new Date(value timestamp),
+        value.name,
+        value.value : java.lang.Double,
+        value.host,
+        value.application,
+        value.options.asJava
+      )
+    }
+  }
+
+  implicit val binder = new MetricBinder
 
   def close {
     logger info s"Shutting down connection to Cassandra cluster ${cluster.getMetadata.getClusterName}"
+    //cluster shutdown will also close all sessions
     cluster.shutdown()
   }
 
+  import cassandra.resultset._
 
-  def storeMetric(metric: Message) = {
-    import scala.collection.JavaConverters._
+  def storeMetric(metric: Message): Future[ResultSet] = {
+
+    import cassandra.boundstatement._
 
     logger.info(s"Storing message ${metric.name}")
-    val session: Session = cluster.connect()
     val stmt: PreparedStatement = session.prepare(
       s"""
-        |INSERT INTO ${keyspace}.messages(id, event_time, name, value, host, application, options)
+        |INSERT INTO $keyspace.messages(id, event_time, name, value, host, application, options)
         |VALUES(?,?,?,?,?,?,?);
       """.stripMargin)
     val boundStatement = new BoundStatement(stmt)
-    session executeAsync(boundStatement bind(
-      UUID randomUUID(),
-      new Date(metric timestamp),
-      metric name,
-      metric value : java.lang.Double,
-      metric host,
-      metric application,
-      metric.options.asJava
-    ))
+    session executeAsync (boundStatement bindFrom metric)
   }
-
-  import cassandra.resultset._
 
 
   def readMetric(key: String): Future[Message] = {
     logger.info(s"Reading metric for $key")
     val query =
       s"""
-        |select * from ${keyspace}.messages
+        |select * from $keyspace.messages
         |where id = ?
       """.stripMargin
-    val session = cluster.connect
     val stmt = session.prepare(query)
     val boundStatement = new BoundStatement(stmt)
-    session.executeAsync( boundStatement.bind(UUID.fromString(key))) map(_.all.map(buildMessage).toList.head)
+    session.executeAsync(boundStatement.bind(UUID.fromString(key))) map (_.all.map(buildMessage).toList.head)
   }
 
   def buildMessage(row: Row): Message = {
@@ -88,13 +95,9 @@ class CassandraMetricStore(config: Configuration,
 
 object CassandraMetricStore {
 
-  /**
-   * Key space for storing metrics
-   */
-  val KeySpaceName = "metrics"
-
-  /**
-   * Column family for storing metrics
-   */
-  val ColumnFamily = "metrics"
+  def apply(config: Configuration): CassandraMetricStore = {
+    val builder = new CassandraClusterBuilder(config)
+    val cluster = builder.build
+    new CassandraMetricStore(config, cluster) //TODO: consider a solution for key builder
+  }
 }

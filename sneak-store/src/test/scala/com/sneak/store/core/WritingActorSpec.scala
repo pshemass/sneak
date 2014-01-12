@@ -10,6 +10,7 @@ import WritingActor._
 import org.specs2._
 import org.specs2.mock.Mockito
 import com.typesafe.config.ConfigFactory
+import com.sneak.store.service.impl.CassandraMetricStore
 
 class WritingActorSpec(_system: ActorSystem) extends TestKit(_system)
   with ImplicitSender

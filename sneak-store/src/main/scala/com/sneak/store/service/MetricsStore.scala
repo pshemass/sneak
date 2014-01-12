@@ -1,6 +1,8 @@
 package com.sneak.store.service
 
 import com.sneak.thrift.Message
+import com.datastax.driver.core.ResultSet
+import scala.concurrent.Future
 
 /**
  * Stores metrics in a storage.
@@ -16,5 +18,5 @@ trait MetricsStore {
    *
    * @param metric
    */
-  def storeMetric(metric: Message)
+  def storeMetric(metric: Message): Future[ResultSet]
 }

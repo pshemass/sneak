@@ -1,10 +1,14 @@
 package com.sneak.store.service.impl
 
-import com.datastax.driver.core.{Row, BoundStatement, ResultSet, ResultSetFuture}
+import com.datastax.driver.core._
 import scala.concurrent.{CanAwait, Future, ExecutionContext}
-import scala.util.{Success, Try}
+import scala.util.Try
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
+import com.sneak.store.util.Configuration
+import com.typesafe.scalalogging.slf4j.Logging
+import scala.util.Success
+import scala.Some
 
 private[impl] trait CassandraResultSetOperations {
 
@@ -54,7 +58,7 @@ trait Binder[-A] {
 trait BoundStatementOperations {
 
   implicit class RichBoundStatement[A : Binder](boundStatement: BoundStatement) {
-    val binder = implicitly[Binder[A]]
+    val binder: Binder[A] = implicitly[Binder[A]]
 
     def bindFrom(value: A): BoundStatement = {
       binder.bind(value, boundStatement)
@@ -69,5 +73,25 @@ object cassandra {
   object resultset extends CassandraResultSetOperations
 
   object boundstatement extends BoundStatementOperations
+
+}
+
+private[impl] class CassandraClusterBuilder(config: Configuration) extends Logging {
+
+  val CASSANDRA_SEEDS: String = "cassandra.hosts"
+
+  val CASSANDRA_PORT: String = "cassandra.port"
+
+  val port = config.getString(CASSANDRA_PORT).toInt
+
+  val hosts = config.getString(CASSANDRA_SEEDS).split(",")
+
+  lazy val build: Cluster = {
+    Cluster.builder().
+      addContactPoints(hosts: _*).
+      withCompression(ProtocolOptions.Compression.SNAPPY).
+      withPort(port).
+      build()
+  }
 
 }

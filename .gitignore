@@ -15,3 +15,7 @@ dist
 /.settings
 
 sneak-client/.idea
+
+*.iml
+
+sneak-store/.idea/*

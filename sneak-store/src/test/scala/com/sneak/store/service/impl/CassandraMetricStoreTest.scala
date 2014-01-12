@@ -15,13 +15,13 @@ class CassandraMetricStoreTest extends mutable.Specification
     "connect to Cassandra cluster" in {
       //given
       val config = FileConfiguration("test.properties")
-      val factory = mock[CassandraClusterFactory]
+      val factory = mock[CassandraClusterBuilder]
       val cluster = mock[Cluster]
       val session = mock[Session]
       val stmt = mock[PreparedStatement]
       val columnDefinitions = mock[ColumnDefinitions]
 
-      factory.connect returns cluster
+      factory.build returns cluster
       cluster.connect() returns session
       session.prepare(anyString) returns(stmt)
       stmt.getVariables returns columnDefinitions
@@ -35,13 +35,13 @@ class CassandraMetricStoreTest extends mutable.Specification
         DataType.varchar() thenReturns
         DataType.map(DataType.varchar(), DataType.varchar())
 
-      val store = new CassandraMetricStore(config, factory)
+      val store = new CassandraMetricStore(config, cluster)
       val message = Message(1l, "test", 1, "local", "testap", Map("key" -> "value"))
 
       store storeMetric  message
 
       there was one(cluster).connect()
-      there was one(factory).connect
+      there was one(factory).build
       there was one(session).prepare(anyString)
       there was one(session).executeAsync(any[BoundStatement])
     }
