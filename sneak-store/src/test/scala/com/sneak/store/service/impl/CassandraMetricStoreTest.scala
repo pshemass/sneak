@@ -2,9 +2,9 @@ package com.sneak.store.service.impl
 
 import org.specs2._
 import org.specs2.mock.Mockito
-import com.sneak.store.util.FileConfiguration
 import com.sneak.thrift.Message
 import com.datastax.driver.core._
+import com.sneak.store.util.ConfigurationLoader
 
 
 class CassandraMetricStoreTest extends mutable.Specification
@@ -14,7 +14,7 @@ class CassandraMetricStoreTest extends mutable.Specification
   "Cassandra store" should {
     "connect to Cassandra cluster" in {
       //given
-      val config = FileConfiguration("test.properties")
+      val config = ConfigurationLoader.load()
       val factory = mock[CassandraClusterBuilder]
       val cluster = mock[Cluster]
       val session = mock[Session]
