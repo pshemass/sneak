@@ -5,10 +5,10 @@ import scala.concurrent.{CanAwait, Future, ExecutionContext}
 import scala.util.Try
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
-import com.sneak.store.util.Configuration
 import com.typesafe.scalalogging.slf4j.Logging
 import scala.util.Success
 import scala.Some
+import com.typesafe.config.Config
 
 private[impl] trait CassandraResultSetOperations {
 
@@ -76,11 +76,11 @@ object cassandra {
 
 }
 
-private[impl] class CassandraClusterBuilder(config: Configuration) extends Logging {
+private[impl] class CassandraClusterBuilder(config: Config) extends Logging {
 
-  val CASSANDRA_SEEDS: String = "cassandra.hosts"
+  val CASSANDRA_SEEDS: String = "sneak.cassandra.hosts"
 
-  val CASSANDRA_PORT: String = "cassandra.port"
+  val CASSANDRA_PORT: String = "sneak.cassandra.port"
 
   val port = config.getString(CASSANDRA_PORT).toInt
 
