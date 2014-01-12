@@ -9,7 +9,7 @@ import com.sneak.store.service.impl.CassandraMetricStore
 /**
  * Main application class.
  */
-class Main extends App with Logging {
+object Main extends App with Logging {
 
   val config = ConfigurationLoader.load()
   val store = CassandraMetricStore(config)

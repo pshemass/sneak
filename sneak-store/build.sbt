@@ -13,6 +13,7 @@ libraryDependencies ++= Seq(
   "io.spray"                  % "spray-routing"         % "1.2-20130712",
   "io.spray"                 %% "spray-json"            % "1.2.3",
   "com.datastax.cassandra"    % "cassandra-driver-core" % "2.0.0-rc2",
+  "org.xerial.snappy"         % "snappy-java"           % "1.1.0.1",
   "joda-time"                 % "joda-time"             % "2.1",
   "org.joda"                  % "joda-convert"          % "1.2",
   "org.apache.kafka"         %% "kafka"                 % "0.8.0" excludeAll(

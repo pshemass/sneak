@@ -24,7 +24,7 @@ class CassandraMetricStore(config: Config,
                            keyBuilder: Message => String = message => message.name)
 extends MetricsStore with Logging {
 
-  val KEYSPACE_PROPERTY = "cassandra.keyspace"
+  val KEYSPACE_PROPERTY = "sneak.cassandra.keyspace"
 
   val keyspace = config getString KEYSPACE_PROPERTY
 

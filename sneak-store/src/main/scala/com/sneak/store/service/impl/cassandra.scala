@@ -78,9 +78,9 @@ object cassandra {
 
 private[impl] class CassandraClusterBuilder(config: Config) extends Logging {
 
-  val CASSANDRA_SEEDS: String = "cassandra.hosts"
+  val CASSANDRA_SEEDS: String = "sneak.cassandra.hosts"
 
-  val CASSANDRA_PORT: String = "cassandra.port"
+  val CASSANDRA_PORT: String = "sneak.cassandra.port"
 
   val port = config.getString(CASSANDRA_PORT).toInt
 
