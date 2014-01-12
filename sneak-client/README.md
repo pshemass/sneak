@@ -10,9 +10,9 @@ Every metric consists of the following information:
 API usage
 =========
 ```scala
-val settings = Settings("localhost:666", "sneak")
+val settings = Settings(kafkaZooKeeper="localhost:666", topic="sneak")
 val publisher = KafkaEventPublisher(settings)
 val system = MonitoringSystem(settings, publisher)
-val captor = system.metricCaptor("test", "testApp")
+val captor = system.metricCaptor(host="myhost", applicationName="testApp")
 captor.capture("test.metric", 666)
 ```
