@@ -6,6 +6,7 @@ import com.sneak.store.util.Configuration
 import com.datastax.driver.core._
 import java.util.{Date, UUID}
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.sneak.store.service.MetricsStore
@@ -29,7 +30,17 @@ extends MetricsStore with Logging {
   val session = cluster.connect
 
   class MetricBinder extends Binder[Message] {
-    def bind(value: Message, boundStatement: BoundStatement): Unit = ???
+    def bind(value: Message, boundStatement: BoundStatement): Unit = {
+      boundStatement.bind(
+        UUID randomUUID(),
+        new Date(value timestamp),
+        value.name,
+        value.value : java.lang.Double,
+        value.host,
+        value.application,
+        value.options.asJava
+      )
+    }
   }
 
   implicit val binder = new MetricBinder
