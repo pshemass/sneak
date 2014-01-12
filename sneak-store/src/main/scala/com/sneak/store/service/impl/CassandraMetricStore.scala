@@ -3,23 +3,23 @@ package com.sneak.store.service.impl
 import com.sneak.thrift.Message
 import com.typesafe.scalalogging.slf4j.Logging
 import com.sneak.store.util.Configuration
-import com.sneak.store.service.MetricsStore
 import com.datastax.driver.core._
 import java.util.{Date, UUID}
 import scala.collection.JavaConversions._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import com.sneak.store.service.MetricsStore
 
 /**
-  * Store that persists messages to Cassandra database.
+ * Store that persists messages to Cassandra database.
  *
  * User: fox
  * Date: 8/8/13
  * Time: 10:52 PM
  */
 class CassandraMetricStore(config: Configuration,
-cluster: Cluster,
-keyBuilder: Message => String = message => message.name)
+                           cluster: Cluster,
+                           keyBuilder: Message => String = message => message.name)
 extends MetricsStore with Logging {
 
   val KEYSPACE_PROPERTY = "cassandra.keyspace"
@@ -27,6 +27,12 @@ extends MetricsStore with Logging {
   val keyspace = config getString KEYSPACE_PROPERTY
 
   val session = cluster.connect
+
+  class MetricBinder extends Binder[Message] {
+    def bind(value: Message, boundStatement: BoundStatement): Unit = ???
+  }
+
+  implicit val binder = new MetricBinder
 
   def close {
     logger info s"Shutting down connection to Cassandra cluster ${cluster.getMetadata.getClusterName}"
@@ -38,7 +44,6 @@ extends MetricsStore with Logging {
 
   def storeMetric(metric: Message): Future[ResultSet] = {
 
-    import scala.collection.JavaConverters._
     import cassandra.boundstatement._
 
     logger.info(s"Storing message ${metric.name}")
@@ -48,9 +53,8 @@ extends MetricsStore with Logging {
         |VALUES(?,?,?,?,?,?,?);
       """.stripMargin)
     val boundStatement = new BoundStatement(stmt)
-    session executeAsync(boundStatement bindFrom metric)
+    session executeAsync (boundStatement bindFrom metric)
   }
-
 
 
   def readMetric(key: String): Future[Message] = {
@@ -62,7 +66,7 @@ extends MetricsStore with Logging {
       """.stripMargin
     val stmt = session.prepare(query)
     val boundStatement = new BoundStatement(stmt)
-    session.executeAsync( boundStatement.bind(UUID.fromString(key))) map(_.all.map(buildMessage).toList.head)
+    session.executeAsync(boundStatement.bind(UUID.fromString(key))) map (_.all.map(buildMessage).toList.head)
   }
 
   def buildMessage(row: Row): Message = {
