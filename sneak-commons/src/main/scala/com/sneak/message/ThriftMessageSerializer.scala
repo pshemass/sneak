@@ -1,4 +1,4 @@
-package com.sneak.client.impl
+package com.sneak.message
 
 import com.sneak.thrift.Message
 import org.apache.thrift.TSerializer
@@ -26,6 +26,6 @@ class ThriftMessageSerializer extends MessageSerializer {
     val is = new ByteArrayInputStream(bytes)
     val transport = new TIOStreamTransport(is)
     val protocol = new TBinaryProtocol(transport)
-    Message(protocol)
+    Message.decode(protocol)
   }
 }

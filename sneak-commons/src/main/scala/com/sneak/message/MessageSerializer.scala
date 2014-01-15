@@ -1,4 +1,4 @@
-package com.sneak.client.impl
+package com.sneak.message
 
 import kafka.serializer.{Decoder, Encoder}
 import com.sneak.thrift.Message
