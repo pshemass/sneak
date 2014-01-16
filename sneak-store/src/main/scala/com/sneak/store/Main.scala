@@ -20,7 +20,7 @@ object Main extends App with Logging {
 
   Runtime.getRuntime.addShutdownHook(new Thread() {
     override def run() {
-      consumer shutdown()
+      consumer.shutdown
       system.shutdown()
       store.close()
     }

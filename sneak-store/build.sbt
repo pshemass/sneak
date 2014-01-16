@@ -16,19 +16,25 @@ libraryDependencies ++= Seq(
   "org.xerial.snappy"         % "snappy-java"           % "1.1.0.1",
   "joda-time"                 % "joda-time"             % "2.1",
   "org.joda"                  % "joda-convert"          % "1.2",
-  "org.apache.kafka"         %% "kafka"                 % "0.8.0" excludeAll(
+  "org.apache"                %% "kafka"                % "0.8.0-SNAPSHOT" excludeAll(
     ExclusionRule(organization = "com.sun.jdmk"),
     ExclusionRule(organization = "com.sun.jmx"),
     ExclusionRule(organization = "javax.jms")
     ),
+  "storm"                     % "storm"                 % "0.9.0.1",
+  "net.wurstmeister.storm"    % "storm-kafka-0.8-plus"  % "0.3.0-SNAPSHOT",
+  "com.github.velvia"        %% "scala-storm"           % "0.2.3-SNAPSHOT",
   "com.typesafe"             %% "scalalogging-slf4j"    % "1.0.1",
   "ch.qos.logback"            % "logback-classic"       % "1.0.13",
   "com.softwaremill.macwire" %% "macros"                % "0.5",
   "com.softwaremill.macwire" %% "runtime"               % "0.5",
-  "sneak"                    %% "sneak-commons"         % "0.0.1",
+  "sneak"                    %% "sneak-commons"         % "0.0.1-SNAPSHOT",
   "org.specs2"               %% "specs2"                % "2.2" % "test",
   "org.scalatest"            %% "scalatest"             % "2.0" % "test",
   "org.mockito"              %  "mockito-all"           % "1.9.5")
+
+resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
+
 
 scalacOptions in Test ++= Seq("-Yrangepos")
 
