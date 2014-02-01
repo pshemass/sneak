@@ -1,4 +1,4 @@
-package com.sneak.store.service.impl
+package com.sneak.store.store.impl
 
 import com.sneak.thrift.Message
 import com.typesafe.scalalogging.slf4j.Logging
@@ -9,7 +9,7 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.sneak.store.service.MetricsStore
+import com.sneak.store.store.MetricsStore
 import com.typesafe.config.Config
 
 /**
@@ -55,7 +55,7 @@ extends MetricsStore with Logging {
 
   import cassandra.resultset._
 
-  def storeMetric(metric: Message): Future[ResultSet] = {
+  def storeMetric(metric: Message): Future[_] = {
 
     import cassandra.boundstatement._
 
@@ -93,6 +93,13 @@ extends MetricsStore with Logging {
     )
   }
 
+  /**
+   * Store metrics in batch manner.
+   *
+   * @param metrics Set of metrics
+   * @return
+   */
+  override def storeMetrics(metrics: Iterable[Message]): Future[_] = ???
 }
 
 object CassandraMetricStore {

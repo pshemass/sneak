@@ -4,7 +4,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import java.util.Properties
 
 /**
- * Configuration service.
+ * Configuration store.
  *
  * User: fox
  * Date: 8/24/13

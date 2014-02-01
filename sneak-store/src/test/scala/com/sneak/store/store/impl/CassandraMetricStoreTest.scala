@@ -1,4 +1,4 @@
-package com.sneak.store.service.impl
+package com.sneak.store.store.impl
 
 import org.specs2._
 import org.specs2.mock.Mockito
