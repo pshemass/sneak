@@ -11,7 +11,6 @@ import WritingActor._
 import org.specs2._
 import org.specs2.mock.Mockito
 import com.typesafe.config.ConfigFactory
-import com.sneak.store.store.impl.CassandraMetricStore
 import org.scalacheck._
 import com.sneak.store._
 import Arbitrary.arbitrary
