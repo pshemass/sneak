@@ -1,15 +1,12 @@
 package com.sneak.store.actors
 
-import org.specs2.mutable.Specification
 import org.scalacheck.Arbitrary.arbitrary
 import com.sneak.store._
 import akka.actor.{Props, ActorSystem}
 import akka.testkit.{TestProbe, ImplicitSender, TestKit}
 import org.scalatest.{BeforeAndAfterAll, WordSpecLike}
-import org.specs2.mock.Mockito
 import com.sneak.store.actors.Buncher.Target
 import scala.concurrent.duration._
-import akka.actor.FSM.Event
 import org.scalacheck.Gen
 
 class GenericBuncherTest(_system: ActorSystem)

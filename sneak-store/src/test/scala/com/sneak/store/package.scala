@@ -3,6 +3,7 @@ package com.sneak
 import org.scalacheck.{Arbitrary, Gen}
 import com.sneak.thrift.Message
 import org.scalacheck.Arbitrary._
+import scala.annotation.tailrec
 
 /**
  * Various generators
@@ -22,6 +23,18 @@ package object store {
 
   def msgSequenceGenerator(n: Int) = Gen.containerOfN[Seq, Message](n, msgGenerator)
 
-  implicit def randomVal[V](gen: Gen[V]) = gen.sample.get
+  /**
+   * Picks a random value until generator returns something different than None.
+   * @param gen Generator
+   * @tparam V Result type
+   * @return Returns an arbitrary value
+   */
+  @tailrec
+  implicit def randomVal[V](gen: Gen[V]): V = {
+    gen.sample match {
+      case None => randomVal(gen)
+      case Some(value) => value
+    }
+  }
 
 }

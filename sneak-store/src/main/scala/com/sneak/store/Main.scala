@@ -5,6 +5,7 @@ import com.sneak.store.util.ConfigurationLoader
 import akka.actor.ActorSystem
 import com.sneak.store.actors.WritingActor
 import com.sneak.store.store.impl.KairosDBClient
+import scala.concurrent.duration._
 
 /**
  * Main application class.
@@ -16,7 +17,7 @@ object Main extends App with Logging {
 
   val store = KairosDBClient.open
 
-  val readActor = system.actorOf(WritingActor.props(store))
+  val readActor = system.actorOf(WritingActor.props(store, 100 millis, 100 millis))
 
   Runtime.getRuntime.addShutdownHook(new Thread() {
     override def run() {
