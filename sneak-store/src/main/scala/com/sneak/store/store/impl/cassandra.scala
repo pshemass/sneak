@@ -1,4 +1,4 @@
-package com.sneak.store.service.impl
+package com.sneak.store.store.impl
 
 import com.datastax.driver.core._
 import scala.concurrent.{CanAwait, Future, ExecutionContext}

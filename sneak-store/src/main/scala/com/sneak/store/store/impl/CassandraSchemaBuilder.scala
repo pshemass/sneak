@@ -1,4 +1,4 @@
-package com.sneak.store.service.impl
+package com.sneak.store.store.impl
 
 import com.typesafe.scalalogging.slf4j.Logging
 import com.datastax.driver.core.Cluster
