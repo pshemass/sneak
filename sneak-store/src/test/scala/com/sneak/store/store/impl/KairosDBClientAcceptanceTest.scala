@@ -2,14 +2,15 @@ package com.sneak.store.store.impl
 
 import org.specs2.mutable.Specification
 import com.typesafe.config.{ConfigFactory, Config}
+import org.specs2.specification.AllExpectations
 
-class KairosDBClientAcceptanceTest extends Specification {
+class KairosDBClientAcceptanceTest extends Specification  {
 
   val config = ConfigFactory.parseString(
     """
       |kairosdb {
       |  rest {
-      |    host = 127.0.0.1
+      |    host = "127.0.0.1"
       |    port = 8080
       |  }
       |  timeout = 10
