@@ -6,7 +6,7 @@ import scala._
 
 object SneakStoreBuild extends Build {
 
-  val akkaVersion = "2.3.0-RC1"
+  val akkaVersion = "2.2.3"
 
 
   lazy val publishM2Configuration =

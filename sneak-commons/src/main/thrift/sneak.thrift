@@ -6,7 +6,7 @@ struct Message {
     3: required double value;
     4: required string host;
     5: required string application
-    6: required map<string,string> options
+    6: required map<string,string> tags
 }
 
 service SneakService {
